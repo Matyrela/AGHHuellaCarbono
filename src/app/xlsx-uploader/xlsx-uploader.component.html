@@ -1,0 +1,52 @@
+<div class="header-content">
+  <img src="https://agh.org.uy/wp-content/uploads/2022/06/adpugh-logo-200.png">
+  <h1 class="title">
+    Tu paso deja <span>huella</span>
+  </h1>
+</div>
+
+<div class="main-content">
+
+  <div class="datos-co2">
+      <div class="value">
+        <img src="https://cdn-icons-png.flaticon.com/512/6686/6686693.png"/>
+        <div class="vehicle-type">
+          <ion-icon name="flash-outline"></ion-icon> - 0,8 gCO2/km
+          <br>
+          <ion-icon name="flame-outline"></ion-icon> - 19,4 gCO2/km
+        </div>
+      </div>
+      <div class="value">
+        <img src="https://cdn-icons-png.flaticon.com/512/89/89102.png"/>
+        <div class="vehicle-type">
+          <ion-icon name="flash-outline"></ion-icon> - 8,9 gCO2/km
+          <br>
+          <ion-icon name="flame-outline"></ion-icon> - 193,7 gCO2/km
+        </div>
+      </div>
+      <div class="value">
+        <img src="https://cdn-icons-png.flaticon.com/512/7695/7695161.png"/>
+        <div class="vehicle-type">
+          <ion-icon name="flame-outline"></ion-icon> - 75,9 gCO2/km
+        </div>
+      </div>
+  </div>
+
+  <button class="upload-file-button" (click)="uploader.click()">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>Analizar datos</p>
+  </button>
+</div>
+
+<div class="footer">
+  <div class="col">
+    <ion-icon name="finger-print-outline"></ion-icon>
+    <p>Jimena La Cruz</p>
+  </div>
+  <div class="col">
+    <ion-icon name="code-outline"></ion-icon>
+    <p>Matías Varela</p>
+  </div>
+</div>
+
+<input style="display: none" type="file" #uploader (change)="onInputChange($event)">
