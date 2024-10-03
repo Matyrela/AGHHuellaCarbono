@@ -24,6 +24,14 @@
   font-size: 1.5em;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+
+  padding: 10px 10px 10px 10px;
+}
+
 .header-content{
   background-color: #f4f4f9;
   display: flex;
@@ -31,7 +39,7 @@
 
   .title {
     text-align: center;
-    font-size: 3rem;
+    font-size: 2.10rem;
     color: #000000;
 
     position: absolute;
@@ -39,4 +47,37 @@
     left: 50%;
     transform : translateX(-50%);
   }
+
+  .total-encuestados{
+    position: absolute;
+    right: 2rem;
+    padding: 0.5rem;
+    border-radius: 12px;
+    align-content: center;
+    background-color: #d2dfcc;
+    text-align: center;
+
+    .value{
+      font-size: 2rem;
+      color: #398d2d;
+    }
+  }
+}
+
+/*
+<div class="chart-container">
+  <div class="chart-row">
+    <div class="chart-col">
+      <canvas id="chart1"></canvas>
+      <canvas id="chart2"></canvas>
+    </div>
+  </div>
+</div>
+ */
+
+.chart-row{
+  padding: 1rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }

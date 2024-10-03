@@ -2,14 +2,16 @@ import {Injectable} from '@angular/core';
 import * as XLSX from 'xlsx';
 import {Chart} from "chart.js";
 import Decimal from "decimal.js";
-
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 @Injectable({
   providedIn: 'root'
 })
 export class XlsxDataService {
+  totalEncuestados!: number;
 
   constructor() {
+    Chart.register(ChartDataLabels);
   }
 
   rows: any = [];
@@ -22,74 +24,16 @@ export class XlsxDataService {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, {type: 'array'});
+      const workbook = XLSX.read(data, { type: 'array' });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      this.rows = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+      this.rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
     };
     reader.readAsArrayBuffer(file);
   }
 
-  getDataSetForTipoDeTransporte(): Chart<'pie'> {
-    const data = this.rows.slice(1).map((row: any) => row[6]);
-    const labels = Array.from(new Set(data));
-    const dataCount = labels.map((label: any) => data.filter((d: any) => d === label).length);
-    return new Chart('chart1', {
-      type: 'pie',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Tipo de Vehículo',
-          data: dataCount,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
-
-  getDataSetForTipoDeAuto() {
-    const data = this.rows.slice(1).map((row: any) => row[7]);
-    const labels = Array.from(new Set(data));
-    const dataCount = labels.map((label: any) => data.filter((d: any) => d === label).length);
-    return new Chart('chart2', {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Tipo de Motor',
-          data: dataCount,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
+  calcTotalEncuestados() {
+    this.totalEncuestados = this.rows.slice(1).filter((row: any) => row[0] !== undefined).length;
   }
 
   hasData() {
@@ -145,6 +89,157 @@ export class XlsxDataService {
     console.log(parseFloat(result.toFixed(2)));
     return parseFloat(result.toFixed(2));
   }
+
+  private getTotalCO2Mitigado() {
+    return 5323;
+  }
+
+  getDataSetForTotalEmitidoMitigado() {
+    return new Chart('chart2', {
+      type: 'bar',
+      data: {
+        labels: ['Total emitido', 'Total mitigado'],
+        datasets: [{
+          label: 'CO2',
+          data: [this.co2.toNumber(), this.getTotalCO2Mitigado()],
+          backgroundColor: [
+            'rgba(224, 51, 99, 0.2)',
+            'rgba(203, 223, 203, 0.2)',
+          ],
+          borderColor: [
+            'rgba(224, 51, 99, 1)',
+            'rgba(203, 223, 203, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            color: '#000',
+            formatter: (value: any, context: any) => {
+              return value + " g";
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels],
+    } as any);
+  }
+
+  getDataSetForTipoDeTransporte(): Chart<'pie'> {
+    const data = this.rows.slice(1).map((row: any) => row[6]);
+    const labels = Array.from(new Set(data));
+    for (let i = 0; i < labels.length; i++) {
+      if (labels[i] === undefined) {
+        labels.splice(i, 1);
+        i--;
+      }
+    }
+    const dataCount: number[] = labels.map((label: any) => data.filter((d: any) => d === label).length);
+
+    return new Chart<'pie'>('chart1', {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Personas',
+          data: dataCount,
+          backgroundColor: [
+            'rgba(203, 223, 203, 0.2)',
+            'rgba(224, 51, 99, 0.2)',
+            'rgba(81, 66, 128, 0.2)',
+            'rgba(239, 126, 78, 0.2)',
+          ],
+          borderColor: [
+            'rgba(203, 223, 203, 1)',
+            'rgba(224, 51, 99, 1)',
+            'rgba(81, 66, 128, 1)',
+            'rgba(239, 126, 78, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            color: '#000',
+            formatter: (value: any, context: any) => {
+              return (
+                context.chart.data.labels[context.dataIndex][0] + context.chart.data.labels[context.dataIndex][1] + " "
+              ) + (value * 100 / this.totalEncuestados).toFixed(1) + '%';
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels],
+    } as any);
+  }
+
+
+  getDataSetForCantidadPersonasEnAuto() {
+    //get row 6 and 9 only if row 6 is auto
+    const data = this.rows.slice(1).filter((row: any) => row[6] === "🚗Auto").map((row: any) => row[9]);
+    const labels = Array.from(new Set(data));
+    for (let i = 0; i < labels.length; i++) {
+      if (labels[i] === undefined) {
+        labels.splice(i, 1);
+        i--;
+      }
+    }
+
+    const dataCount: number[] = labels.map((label: any) => data.filter((d: any) => d === label).length);
+
+    return new Chart('chart3', {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Personas',
+          data: dataCount,
+          backgroundColor: [
+            'rgba(203, 223, 203, 0.2)',
+            'rgba(224, 51, 99, 0.2)',
+            'rgba(81, 66, 128, 0.2)',
+            'rgba(239, 126, 78, 0.2)',
+          ],
+          borderColor: [
+            'rgba(203, 223, 203, 1)',
+            'rgba(224, 51, 99, 1)',
+            'rgba(81, 66, 128, 1)',
+            'rgba(239, 126, 78, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: false,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          datalabels: {
+            color: '#000',
+            formatter: (value: any, context: any) => {
+              return value + " personas";
+            }
+          }
+        }
+      },
+      plugins: [ChartDataLabels],
+    } as any);
+  }
 }
 
 enum TipoDeTransporteCO2 {
@@ -158,3 +253,10 @@ enum TipoDeTransporteCO2 {
 
   Moto = 75.9,
 }
+
+// Chart colors
+// GREEN: #cbdfcb
+// RED: #e03363
+// ORANGE: #e95056
+// LIGHT ORANGE: #ef7e4e|
+// PURPLE: #514280

@@ -1,27 +1,22 @@
 <div class="header-content">
   <img src="https://agh.org.uy/wp-content/uploads/2022/06/adpugh-logo-200.png">
   <h1 class="title">
-    Huella de carbono total <span>{{xlsxData.co2}}</span> gCO2
+    Huella de carbono total <span>{{this.co2Gramos}}</span>
   </h1>
+  <div class="total-encuestados">
+    <span class="value">{{xlsxData.totalEncuestados}}</span>
+  </div>
 </div>
 
-<div class="chart-container">
-  <div class="chart-row">
-    <div class="chart-col">
-      <canvas id="chart1"></canvas>
-    </div>
-    <div class="chart-col">
-      <canvas id="chart2"></canvas>
-    </div>
-  </div>
-  <div class="chart-row">
-    <div class="chart-col">
-      <canvas id="chart3"></canvas>
-    </div>
-    <div class="chart-col">
-      <canvas id="chart4"></canvas>
-    </div>
-  </div>
+
+
+<div class="chart-row">
+  <canvas id="chart1"></canvas>
+  <canvas id="chart2"></canvas>
+</div>
+
+<div class="chart-row">
+  <canvas id="chart3"></canvas>
 </div>
 
 <div class="footer">

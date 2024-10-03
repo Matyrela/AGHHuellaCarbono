@@ -5,15 +5,28 @@
   display: flex;
   align-items: center;
 
-  .title {
+  .title-container {
     text-align: center;
-    font-size: 3rem;
     color: #000000;
 
     position: absolute;
 
     left: 50%;
     transform : translateX(-50%);
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .title-container span {
+    color: #398d2d;
+  }
+
+  .por-persona{
+    font-size: 1.5rem;
+    margin-top: -3rem;
+    text-align: center;
   }
 }
 
@@ -47,10 +60,6 @@ img {
   height: auto;
 
   padding: 10px 10px 10px 10px;
-}
-
-.title span {
-  color: #398d2d;
 }
 
 .upload-file-button{
